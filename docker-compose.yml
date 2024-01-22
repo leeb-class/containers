@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  # Website App
+  website:
+    image: leeb/website
+    volumes:
+      - website:/rails/storage
+    environment:
+      SECRET_KEY_BASE: ${WEBSITE_SECRET_KEY_BASE}
+  # Rails App 2
+  signups:
+    image: leeb/signups
+    volumes:
+      - signups:/rails/storage
+    environment:
+          SECRET_KEY_BASE: ${SIGNUPS_SECRET_KEY_BASE}
+  # Rails App 3
+  grades:
+    image: leeb/grades
+    ports:
+      - "3030:3000"
+    volumes:
+      - grades:/rails/storage
+    environment:
+      SECRET_KEY_BASE: ${GRADES_SECRET_KEY_BASE}
+
+  # Nginx as Reverse Proxy
+  nginx:
+    image: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      
+volumes:
+  website:
+    driver: local
+  signups:
+    driver: local
+  grades:
+    driver: local
